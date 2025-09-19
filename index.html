@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <title>Golden Auto Contact Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #loader {
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #loader, #form-container {
+      text-align: center;
+    }
+    @media (min-width: 1400px) {
+      #form-container {
+        max-width: 40%;
+      }
+    } 
+    @media (max-width: 1399px) {
+      #form-container {
+        max-width: 60%;
+      }
+    }
+    #form-container {
+      display: block;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 100%;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    select#type {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 3px 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #e7ad32;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #c5901f;
+    }
+    .status {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .twofields {
+      display: flex;
+    }
+    #container {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .statusone, .copyright {
+      font-size: 12px;
+    }
+    .copyright {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Loader -->
+  <div id="loader">
+    <img src="loading.gif" alt="Loading..." width="80%" height="50%" />
+  </div>
+  <div id="container">
+  <!-- Contact Form -->
+    <div id="form-container">
+      <img src="logo-grey.png" alt="logo" width="80%" height="auto" />
+      <h2>Contact Us</h2>
+      <form id="contact-form">
+        <input type="text" name="name" placeholder="Emër dhe mbiemër" required />
+        <input type="tel" name="phonenumber" placeholder="Numri i telefonit" required />
+        <div class="twofields">
+          <select id="type" name="cartype" required="">
+          <option value="" disabled="" selected="">Zgjidh llojin e makinës</option>
+          <optgroup label="Gjermane">
+            <option>Mercedes-Benz</option><option>BMW</option><option>Audi</option><option>Porsche</option><option>Volkswagen</option>
+          </optgroup>
+          <optgroup label="Italiane">
+            <option>Alfa Romeo</option><option>Fiat</option><option>Ferrari</option><option>Lamborghini</option><option>Maserati</option>
+          </optgroup>
+          <optgroup label="Britanike">
+            <option>Land Rover</option><option>Range Rover</option><option>Jaguar</option><option>Bentley</option><option>Rolls-Royce</option>
+          </optgroup>
+          <optgroup label="Japoneze">
+            <option>Toyota</option><option>Lexus</option><option>Honda</option><option>Mazda</option><option>Nissan</option><option>Subaru</option>
+          </optgroup>
+          <optgroup label="Koreane">
+            <option>Hyundai</option><option>Kia</option><option>Genesis</option>
+          </optgroup>
+          <optgroup label="Franceze">
+            <option>Peugeot</option><option>Citroën</option><option>Renault</option><option>Dacia</option>
+          </optgroup>
+          <optgroup label="Amerikane">
+            <option>Tesla</option><option>Ford</option><option>Chevrolet</option><option>Dodge</option><option>Jeep</option>
+          </optgroup>
+          <optgroup label="Të tjera / Premium">
+            <option>Volvo</option><option>Polestar</option><option>Skoda</option><option>Cupra</option><option>Mini</option>
+          </optgroup>
+          <option>Tjetër</option>
+          </select>
+          <input id="budget" name="maxbudget" type="number" min="5000" max="200000" step="100" placeholder="Buxheti maksimal (EUR)" required="">
+        </div>
+        <textarea name="message" rows="4" placeholder="Të dhëna shtesë (opsionale). Prsh. modeli/viti/motorri, ngjyra, kilometrazhi etj."></textarea>
+        <button type="submit">Dërgo</button>
+        <p class="status" id="status"></p>
+        <p class="statusone">Duke dërguar, pranoni kontaktin nga Golden Auto për ofertat e përshtatura.</p>
+      </form>
+    </div>
+    <div class="copyright">© Golden Auto Import • 🇰🇷 → 🇦🇱 Premium Import</div>
+  </div>
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    (function() {
+      emailjs.init("Qty619_X4TFe9JRFd"); // Replace with your EmailJS Public Key
+    })();
+
+    // Show form after 2s
+    setTimeout(() => {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("container").style.display = "flex";
+    }, 2000);
+
+    // Handle form submit
+    document.getElementById("contact-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const status = document.getElementById("status");
+      status.textContent = "Po dërgohet...";
+
+      emailjs.send("service_kw0c7ly", "template_h7y1qtg", {
+        name: this.name.value,
+        phonenumber: this.phonenumber.value,
+        cartype: this.cartype.value,
+        maxbudget: this.maxbudget.value,
+        message: this.message.value
+      })
+      .then(() => {
+        status.textContent = "✅ Kërkesa u dërgua me sukses!";
+        this.reset();
+      }, (err) => {
+        console.error(err);
+        status.textContent = "❌ Kërkesa nuk mund të dërgohej. Provoni sërish.";
+      });
+    });
+  </script>
+</body>
+</html>
